@@ -1,0 +1,38 @@
+{
+    "05/08/2023": [
+        {
+            "nome": "Dato Carneiro",
+            "periodo": "Manh\u00e3 (07:00 \u00e0s 12:00)"
+        },
+        {
+            "nome": "Dato Carneiro",
+            "periodo": "Tarde (12:00 \u00e0s 18:00)"
+        },
+        {
+            "nome": "Dato Carneiro",
+            "periodo": "Noite (18:00 \u00e0s 23:59)"
+        },
+        {
+            "nome": "Dato Carneiro",
+            "periodo": "Madrugada (00:00 \u00e0s 07:00)"
+        }
+    ],
+    "06/08/2023": [
+        {
+            "nome": "Dato Carneiro",
+            "periodo": "Manh\u00e3 (07:00 \u00e0s 12:00)"
+        }
+    ],
+    "20/08/2023": [
+        {
+            "nome": "Dato Carneiro",
+            "periodo": "Manh\u00e3 (07:00 \u00e0s 12:00)"
+        }
+    ],
+    "18/12/2023": [
+        {
+            "nome": "Datoo Carneiro",
+            "periodo": "Noite (18:00 \u00e0s 23:59)"
+        }
+    ]
+}

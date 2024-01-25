@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmamosVoceVóHilda</title>
+    <!-- Link para o style.css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href='style.css'>
+</head>
+<body>
+    <img src="/static/vohilda.jpg" alt="Foto Vó Hilda">
+    <h1>ESCALA DE CUIDADOS VÓ HILDA</h1>
+    <h3>Chave PIX: 41985038817 - para ajuda de custos</h3>
+    <div style="overflow: auto;">
+        <div style="float: left; width: 33,33%;">
+            <div class="paragrafo">
+                <p>
+                    <ul>
+                        <li><strong>A Vó esta acamada</strong></li>
+                        <li><strong>Em uso de dieta enteral via sonda nasogástrica</strong></li>
+                        <li><strong>Em uso de traqueostomia, necessitando de limpeza quando necessario</strong></li>
+                        <li><strong>Em uso de de Fraldas Geriatricas XG</strong></li>
+                        <li><strong>Necessita de troca de curativos diário</strong></li>
+
+                      <!--
+                        <li>5 unidades ampolas/dia (300 ou 500 ml) para dieta enteral</li>
+                        <li>1 unidade/dia de equipamento simples para dieta gravitacional</li>
+                        <li>1 unidade/dia de seringa de 50 ml.</li>
+                        <li>Fórmula enteral: pó ou líquido.</li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+        <div style="float: left; width: 33,33%;">
+            <div class="paragrafo">
+                <p>
+                    <ul>
+                        <strong>Opções de dieta em pó:</strong>
+                        <li>Opção 1 Nutrison Soya (Danone) - Dosagem: 330g/dia de pó.
+                            sendo 11 colheres medidoras em 200ml de água fervida ou filtrada.</li>
+                        <li>Opção 2 - Trophic Basic (Prodiet) - Dosagem: 355g/dia de pó, 
+                            sendo 8 colheres medidoras em 200ml de água fervida ou filtrada.</li>
+                        <li>Opção 3 - Nutri Enteral Soja (Nutrimed) - Dosagem: 324g/dia de pó,
+                            sendo 9 colheres medidoras em 190ml de água fervida ou filtrada.</li>
+                         Totalizando 13 latas/mês de 800g.
+                    </ul>
+                </p>
+            </div>
+        </div>
+        <div style="float: left; width: 33,33%;">
+            <div class="paragrafo">
+                <ul>
+                    <strong>Opções de dieta líquida:</strong>
+                    <li>Opção 1 - Isosource 1.5 (Nestle) - Dosagem: 1000 ml/dia.</li>
+                    <li>Opção 2 - Trophic 1.5 (Prodiet) - Dosagem: 1000 ml/dia.</li>
+                    <li>Opção 3 - Nutri Enteral 1.5 (Nutrimed) - Dosagem: 1000 ml/dia.</li>
+                    <li>Opção 4 - Nutrison Energy 1.5 (Danone) - Dosagem: 1000 ml/dia.</li>
+                    Totalizando 30 litros/mês.
+                      -->
+             </ul>
+            </div>
+        </div>
+    </div>
+    <form class="formulario" id="reservaForm" method="post" action="/">
+        <div class="input-wrapper">
+            <label for="nome" class="nomecabeçalho">Nome:</label>
+            <input type="text" id="nome" name="nome" maxlength="25" required>
+        </div>
+        <div class="input-wrapper">
+            <label for="data_reserva">Data:</label>
+            <input type="date" id="data_reserva" name="data_reserva" required>
+        </div>
+        <div class="input-wrapper">
+            <label for="periodo">Período:</label>
+            <select name="periodo" id="periodo" required>
+                <option value="Manhã (07:00 às 12:00)">Manhã (07:00 às 12:00)</option>
+                <option value="Tarde (12:00 às 18:00)">Tarde (12:00 ás 18:00)</option>
+                <option value="Noite (18:00 às 23:59)">Noite (18:00 ás 23:59)</option>
+                <option value="Madrugada (00:00 às 07:00)">Madrugada (00:00 às 07:00)</option>
+            </select>
+        </div>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <table id="reservasTable" border="1">
+          <thead>
+              <tr>
+                  <th class="data">Data</th>
+                  <th class="nome">Nome</th>
+                  <th>Período</th>
+                  <th>Ação</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for data, reservas_for_date in reservas.items() %}
+                  {% for reserva in reservas_for_date %}
+                  <tr>
+                      <td>{{ data }}</td>
+                      <td>{{ reserva.nome }}</td>
+                      <td>{{ reserva.periodo }}</td>
+                      <td>
+                          <!-- Ação de exclusão mudou para chamar a função handleDelete() -->
+                          <form class="deleteForm" onsubmit="handleDelete(event)">
+                              <input type="hidden" name="data_reserva" value="{{ data }}">
+                              <input type="hidden" name="nome" value="{{ reserva.nome }}">
+                              <button type="submit">Excluir</button>
+                          </form>
+                      </td>
+                  </tr>
+                  {% endfor %}
+              {% endfor %}
+          </tbody>
+      </table>
+  
+
+    <script>
+        // Função para atualizar a tabela de reservas
+        function updateTable(reservas) {
+            const tableBody = document.querySelector('#reservasTable tbody');
+            tableBody.innerHTML = '';
+
+            for (const [data, reserva] of Object.entries(reservas)) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data}</td>
+                    <td>${reserva.nome}</td>
+                    <td>${reserva.periodo}</td>
+                    <td>
+                        <form class="deleteForm" action="/delete" method="post">
+                            <input type="hidden" name="data_reserva" value="${data}">
+                            <button type="submit">Excluir</button>
+                        </form>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        // Função para enviar o formulário via AJAX
+        function submitForm(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector('#message').textContent = data.message;
+                    updateTable(data.reservas);
+                } else {
+                    document.querySelector('#message').textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Adicionar o evento de envio do formulário
+        const reservaForm = document.querySelector('#reservaForm');
+
+        /*
+        // Função para tratar o evento de exclusão e atualizar a tabela
+        function handleDelete(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                body: formData
+            })
+        */
+
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector('#message').textContent = data.message;
+                    updateTable(data.reservas);
+                    // Redirecionar o usuário de volta à página principal
+                    window.location.href = "/";
+                } else {
+                    document.querySelector('#message').textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+  /*
+          // Adicionar o evento de clique aos botões "Excluir"
+          const deleteForms = document.querySelectorAll('.deleteForm');
+          deleteForms.forEach(form => {
+              form.addEventListener('submit', handleDelete);
+          });
+  */
+          // Carregar as reservas ao carregar a página
+          fetch('/get_reservas')
+              .then(response => response.json())
+              .then(data => {
+                  updateTable(data.reservas);
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+              });
+  
+                // Obtém o elemento do campo de entrada de data
+          const dataReservaInput = document.getElementById('data_reserva');
+        
+          // Adiciona um evento para verificar a data selecionada
+          dataReservaInput.addEventListener('change', function() {
+            // Obtém o valor da data selecionada
+            const selectedDate = new Date(this.value);
+        
+            // Obtém a data atual
+            const currentDate = new Date();
+        
+            // Obtém o ano atual
+            const currentYear = currentDate.getFullYear();
+        
+            // Define o ano limite como 2023
+            const limiteAno = 2023;
+        
+            // Verifica se a data selecionada é superior a 2023
+            if (selectedDate.getFullYear() <= limiteAno) {
+              // Limpa o valor do campo de entrada
+              this.value = '';
+              alert('Por favor, selecione uma data posterior a 2023.');
+            }
+          });
+    </script>
+</body>
+</html>
